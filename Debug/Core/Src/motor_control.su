@@ -1,0 +1,4 @@
+motor_control.c:19:6:gpio_set	8	static
+motor_control.c:25:6:Motorset	24	static
+motor_control.c:62:6:posPID	32	static
+motor_control.c:83:6:velPID	32	static

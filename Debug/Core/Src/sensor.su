@@ -1,0 +1,4 @@
+sensor.c:68:6:ADval_get	4	static
+sensor.c:85:6:ADval_sum	4	static
+sensor.c:94:9:MakerSenTh	24	static
+sensor.c:106:6:getEncoder	24	static
