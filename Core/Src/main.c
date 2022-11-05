@@ -65,6 +65,7 @@ TIM_HandleTypeDef htim12;
 
 UART_HandleTypeDef huart1;
 
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -144,6 +145,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	//uint64_t enc_cnt_10ms;
 
+
 	if(htim->Instance == htim6.Instance){	//1ms
 
 		cnt_sw++;
@@ -157,12 +159,111 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		//read_accel_data();
 		ADval_get();
 		ADval_sum();
+//		Cross_Check();
+		Maker_Check();
 
-		//timer++;
+
+		timer++;
+
+/*		if(line_sen12 <= 500){
+			Sensor_st = 1;
+
+		}
+		else{
+			Sensor_st = 0;
+		}
+
+		if(line_sen13 <= 500){
+			Sensor_st = 2;
+		}
+		else{
+			Sensor_st = 0;
+		}
+		if(line_sen12 <= 500 && line_sen13 <= 500){
+			Sensor_st = 3;
+		}
+		else{
+			Sensor_st = 0;
+		}*/
+
+		if(main_pattern == 8){
+
+			motor_pwmL = order_velL + order_posL;
+			motor_pwmR = order_velR + order_posR;
+			Motorset((int16_t)(order_velL + order_posL), (int16_t)(order_velR + order_posR), 0);
+			//Motorset((int16_t)(140 + order_posL), (int16_t)(140 + order_posR), 0);
+			//Motorset(order_posL, order_posR, 0);
+//			Motorset(order_velL, order_velR, 0);
+			//Motorset(-100, -100, 0);
+
+			/*if(MR_flag == 1  ){
+				MR_flag = 0 ;
+
+
+			}else*/
+			if(GL_flag == 18 ){
+				main_pattern = 11;
+				timer = 0;
+			}
+
+		}
+
+
+		if(main_pattern == 9){
+
+			motor_pwmL = order_velL + order_posL;
+			motor_pwmR = order_velR + order_posR;
+			//Motorset((int16_t)(order_velL + order_posL), (int16_t)(order_velR + order_posR), 0);
+			Motorset((int16_t)(160 + order_posL), (int16_t)(160 + order_posR), 0);
+			//Motorset(order_posL, order_posR, 0);
+//			Motorset(order_velL, order_velR, 0);
+			//Motorset(-100, -100, 0);
+
+			/*if(MR_flag == 1  ){
+				MR_flag = 0 ;
+
+
+			}else*/
+			if(GL_flag >= 18 ){
+				main_pattern = 11;
+				timer = 0;
+			}
+
+		}
+
+
 
 		if(main_pattern == 10){
-			Motorset((int16_t)(order_velL + order_posL), (int16_t)(order_velR + order_posR), 0);
+
+			motor_pwmL = order_velL + order_posL;
+			motor_pwmR = order_velR + order_posR;
+			//Motorset((int16_t)(order_velL + order_posL), (int16_t)(order_velR + order_posR), 0);
+			Motorset((int16_t)(200 + order_posL), (int16_t)(200 + order_posR), 0);
 			//Motorset(order_posL, order_posR, 0);
+//			Motorset(order_velL, order_velR, 0);
+			//Motorset(-100, -100, 0);
+
+			/*if(MR_flag == 1  ){
+				MR_flag = 0 ;
+
+
+			}else*/
+			if(GL_flag == 18 ){
+				main_pattern = 11;
+				timer = 0;
+			}
+
+		}
+
+		 if(main_pattern == 11){
+			Motorset((int16_t)(order_posL), (int16_t)(order_posR), 0);
+			if(timer >= 50){
+				main_pattern = 12;
+			}
+		}
+		if(main_pattern == 12){
+			Motorset((int16_t)(order_posL), (int16_t)(order_posR), 0);
+			//main_pattern = 12;
 		}
 
 	}

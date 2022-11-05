@@ -31,7 +31,10 @@ Core/Src/sensor.o: ../Core/Src/sensor.c ../Core/Inc/sensor.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ ../Core/Inc/setup.h ../Core/Inc/AQM0802.h ../Core/Inc/ICM20648.h \
+ ../Core/Inc/INA260.h ../Core/Inc/Flash_F405.h ../Core/Inc/sensor.h \
+ ../Core/Inc/switch.h ../Core/Inc/motor_control.h
 
 ../Core/Inc/sensor.h:
 
@@ -102,3 +105,19 @@ Core/Src/sensor.o: ../Core/Src/sensor.c ../Core/Inc/sensor.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+
+../Core/Inc/setup.h:
+
+../Core/Inc/AQM0802.h:
+
+../Core/Inc/ICM20648.h:
+
+../Core/Inc/INA260.h:
+
+../Core/Inc/Flash_F405.h:
+
+../Core/Inc/sensor.h:
+
+../Core/Inc/switch.h:
+
+../Core/Inc/motor_control.h:

@@ -19,6 +19,7 @@
 #include "motor_control.h"
 
 extern int8_t setup_mode;
+extern int8_t sensor_mode;
 
 
 void setup(void);

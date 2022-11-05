@@ -34,7 +34,7 @@ Core/Src/setup.o: ../Core/Src/setup.c ../Core/Inc/setup.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/AQM0802.h ../Core/Inc/ICM20648.h ../Core/Inc/INA260.h \
  ../Core/Inc/Flash_F405.h ../Core/Inc/sensor.h ../Core/Inc/switch.h \
- ../Core/Inc/motor_control.h
+ ../Core/Inc/motor_control.h ../Core/Inc/sensor.h
 
 ../Core/Inc/setup.h:
 
@@ -119,3 +119,5 @@ Core/Src/setup.o: ../Core/Src/setup.c ../Core/Inc/setup.h \
 ../Core/Inc/switch.h:
 
 ../Core/Inc/motor_control.h:
+
+../Core/Inc/sensor.h:

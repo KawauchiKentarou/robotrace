@@ -4,8 +4,9 @@
  *  Created on: 2022/09/24
  *      Author: kawauchikentarou
  */
-
+#include "stdio.h"
 #include "sensor.h"
+#include "setup.h"
 
 uint16_t ADC1_Buff[ADC_DATA_BUFFR_SIZE];
 uint16_t line_sen0;
@@ -33,10 +34,15 @@ int16_t enc_tim8_ms = 0;
 int64_t enc_tim1_total = 0;
 int64_t enc_tim8_total = 0;
 int64_t enc_tim_total = 0;
+int64_t enc_tim_ML = 0;
+int64_t enc_tim_MR = 0;
+int64_t enc_tim_MC = 0;
 int32_t enc_tim1_cnt_10ms;
 int32_t enc_tim8_cnt_10ms;
 int64_t enc_cnt;
 int64_t enc_cnt2;
+uint8_t Maker_senL = 0;
+uint8_t Maker_senR = 0;
 float velR, monR;
 float velL, monL;
 int posR;
@@ -45,8 +51,23 @@ char error_flag = 0;
 uint16_t error_cnt;
 int timer = 0;
 unsigned char main_pattern = 0;
+unsigned char maker_pattern = 0;
 uint8_t maker_check;
-char crossline_flag = 0;
+int crossline_flag_L = 0;
+int crossline_flag_M = 0;
+int L_Maker_flag = 0;
+int R_Maker_flag = 0;
+uint8_t R_cnt = 0;
+uint8_t L_cnt = 0;
+uint8_t MR_cnt = 0;
+uint8_t ML_cnt = 0;
+uint8_t CR_cnt = 0;
+int R_flag = 0;
+int L_flag = 0;
+int MR_flag = 0;
+int ML_flag = 0;
+int GL_flag = 0;
+
 unsigned char velocity_pattern = 0;
 int encoder_event = 0;
 uint8_t flash_flag = 0;
@@ -62,8 +83,78 @@ uint8_t second_trace_flag = 0;
 float mm_total = 0;
 uint32_t maker_adress;
 uint16_t maker_distance_cmp_lim;
+uint8_t MakerSenTh(uint16_t);
+uint8_t CrossCheck(uint16_t);
 float PlanVelo2[6000];
 uint8_t second_trace_pattern;
+uint16_t ADC_min[SENSOR_NUMBER];
+uint16_t ADC_max[SENSOR_NUMBER];
+uint16_t ADC_dif[SENSOR_NUMBER];
+uint8_t Sensor_st = 0;
+
+
+void ADC_init(){
+//	switch(sensor_mode) {
+//	case 0:
+		lcd_locate(0,0);
+		lcd_print("genkini");
+		lcd_locate(0,1);
+		lcd_print("mokkori");
+		HAL_Delay(100);
+//		break;
+}
+
+/*	case 1:
+		lcd_locate(0,0);
+		lcd_print("genkini");
+		lcd_locate(0,1);
+		lcd_print("mokkori");
+		break;
+
+	}
+}
+	//Flash_load();
+	//lcd_printf("ADCinit");
+	HAL_Delay(100);
+	uint16_t ADC_Max[SENSOR_NUMBER]={0};
+	uint16_t i;
+
+	for(int j=0;j<SENSOR_NUMBER;j++){
+		ADC_min[j]=10000;
+	}
+
+
+	i = 0;
+	while (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_14))
+	{
+		if(analog[i] > ADC_Max[i]){
+			ADC_Max[i] = analog[i];
+		}
+		if(analog[i] < ADC_min[i]){
+			ADC_min[i] = analog[i];
+		}
+		i++;
+		if(i == SENSOR_NUMBER){
+			i=0;
+		}
+	//	LED(2);
+
+	}
+	for(int j=0;j<SENSOR_NUMBER;j++){
+		ADC_dif[j] = ADC_max[j]-ADC_min[j];
+	//	work_ram[z] = ADC_dif[z];
+	//	work_ram[z+SENSOR_NUMBER] = ADC_Small[z];
+	}
+	//Flash_store();
+	//for(int z=0;z<SENSOR_NUMBER;z++){
+//		printf("%d,%d\r\n",z,ADC_Small[z]);
+	//}
+//	for(int z=0;z<SENSOR_NUMBER;z++){
+//		printf("%d,%d\r\n",z,ADC_Max[z]);
+//	}
+//	LED(3);
+
+}*/
 
 void ADval_get(void) {
 	line_sen0  = ADC1_Buff[0];
@@ -82,6 +173,170 @@ void ADval_get(void) {
 	line_sen13 = ADC1_Buff[13];
 }
 
+
+
+
+/*void Cross_Check(void) {
+	if(line_sen11 <= 500){
+		L_cnt++;
+	}
+	if(line_sen0 <= 500){
+		R_cnt++;
+	}
+
+	if(L_cnt >=5 && R_cnt >=5){
+		L_cnt = 0;
+		R_cnt = 0;
+		crossline_flag_L = 1;
+	}
+		else if(L_cnt >=5){
+			L_cnt = 0;
+			R_cnt = 0;
+			crossline_flag = 0;
+		}
+		else if(R_cnt >=5){
+				L_cnt = 0;
+				R_cnt = 0;
+				crossline_flag = 0;
+
+	}
+	}*/
+
+
+void Maker_Check(void) {
+
+	if(line_sen12 >= 300 && line_sen13 >= 300){	//black
+		Sensor_st = 0;
+	}
+	else if(line_sen12 <= 500 && line_sen13 <= 500){	//white
+		Sensor_st = 2;
+	}
+/*	else if(line_sen12 <= 300){	//left
+			Sensor_st = 1;
+		}*/
+
+	/*else*/ if(line_sen13 <= 300){	//right
+			Sensor_st = 2;
+		}
+
+	if(Sensor_st == 2){
+					MR_cnt++;
+				}
+				else{
+					MR_cnt = 0;
+				}
+
+
+	if(MR_cnt >=10){
+					MR_cnt = 0;
+					MR_flag = 0;
+					maker_pattern = 2;
+					}
+
+
+
+				if(maker_pattern == 2){
+					if(line_sen13 >= 500){
+					maker_pattern = 3;
+					}
+				}
+
+				if(maker_pattern == 3){
+					GL_flag++;
+					maker_pattern = 0;
+				}
+
+
+/*		switch(maker_pattern){
+
+		case 0:
+			MR_flag = 0;
+			if(Sensor_st == 1){
+				ML_cnt++;
+			}
+			else{
+				ML_cnt = 0;
+			}
+			if(Sensor_st == 2){
+				MR_cnt++;
+			}
+			else{
+				MR_cnt = 0;
+			}
+			if(Sensor_st == 3){
+				CR_cnt++;
+			}
+			else{
+				CR_cnt = 0;
+			}
+
+			if(CR_cnt >=5){
+				Sensor_st = 0;
+				enc_tim_MC = enc_tim_total+50;
+				maker_pattern= 3;
+			}
+			else if(ML_cnt >=10){
+				Sensor_st = 0;
+				enc_tim_ML = enc_tim_total+50;
+				maker_pattern= 1;
+			}
+			else if(MR_cnt >=10){
+				Sensor_st = 0;
+				enc_tim_MR = enc_tim_total+5;
+				MR_cnt = 0;
+				MR_flag = 0;
+				if(line_sen12 <= 500){
+					maker_pattern = 0;
+				}else
+				{
+					maker_pattern = 2;
+				//}
+			}
+
+			break;
+		case 1:
+			if(enc_tim_ML <=enc_tim_total){
+				ML_cnt = 0;
+				MR_cnt = 0;
+				ML_flag = 1;
+				maker_pattern = 0;
+			}
+			break;
+		case 2:
+			if(enc_tim_MR <= enc_tim_total){
+				ML_cnt = 0;
+				MR_cnt = 0;
+				MR_flag = 0;
+				maker_pattern = 4;
+			}
+			break;
+		case 3:
+
+			if(enc_tim_MC <=enc_tim_total){
+				ML_cnt = 0;
+				MR_cnt = 0;
+				crossline_flag_M = 1;
+				maker_pattern = 0;
+			}
+			break;
+		case 4:
+				GL_flag++;
+				maker_pattern = 0;
+			break;
+		}*/
+}
+
+/*uint8_t MakerSenTh(uint16_t makerthreshold) {
+	uint8_t maker = 0;
+
+	if(crossline_flag == 0){
+		if(line_sen12 < makerthreshold) maker |= 0x01;
+		if(line_sen13 < makerthreshold) maker |= 0x08;
+	}
+
+	return maker;
+}*/
+
 void ADval_sum(void) {
 	line_senLLL	= line_sen11 + line_sen10;
 	line_senLL	= line_sen9 + line_sen8;
@@ -91,16 +346,6 @@ void ADval_sum(void) {
 	line_senRRR	= line_sen1 + line_sen0;
 }
 
-uint8_t MakerSenTh(uint16_t makerthreshold) {
-	uint8_t maker = 0;
-
-	if(crossline_flag == 0){
-		if(line_sen12 < makerthreshold) maker |= 0x01;
-		if(line_sen13 < makerthreshold) maker |= 0x08;
-	}
-
-	return maker;
-}
 
 
 void getEncoder(void) {
@@ -130,3 +375,16 @@ void getEncoder(void) {
 	monL = velL;
 
 }
+
+float mileage(float mm) {
+	return mm * ENC_PULSE_MM;
+}
+
+/*float ComplementaryFilter(float high_cut, float low_cut, float alpha, float complement_before) {
+	float complement;
+
+	complement = alpha * (complement_before + high_cut * DELTA_T) + (1.0f - alpha) * low_cut;
+
+	return complement;
+}*/
+

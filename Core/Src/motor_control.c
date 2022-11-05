@@ -12,9 +12,14 @@ int posR;
 int posL;
 float order_posR = 0.0f;
 float order_posL = 0.0f;
-float order_velR = 0.0f;
 float order_velL = 0.0f;
+float order_velR = 0.0f;
+float motor_pwmL = 0.0f;
+float motor_pwmR = 0.0f;
 float target_vel;
+int i_vel_clear_flag;
+int i_pos_clear_flag;
+float mon_def_pos = 0;
 
 void gpio_set(void){
 	CS_SET;
@@ -28,11 +33,11 @@ void Motorset(int16_t motorL, int16_t motorR, uint8_t stop) {
 
 	if(motorR >= 0) {
 		pwmR_out = motorR;
-		MR_SET;
+		MR_RESET;
 	}
 	else {
 		pwmR_out = motorR * (-1);
-		MR_RESET;
+		MR_SET;
 	}
 
 	if(motorL >= 0) {
@@ -63,34 +68,51 @@ void posPID(void) {
 
 	float p_pos, d_pos;
 	static float i_pos;
-	float kp_pos = 0.15f, ki_pos = 0.00f/*0.004f*/, kd_pos = 0.00f/*0.008f*/;
+	float kp_pos = 0.025f, ki_pos = 0.004f/*0.004f*/, kd_pos = 0.002f/*0.008f*/;
 	static float def_pos[] = {0.0f, 0.0f};
 
+	if(i_pos_clear_flag == 1){
+		i_pos = 0;
+		i_pos_clear_flag = 0;
+	}
+
 	//def_pos[0] = ( ((float)line_senLLL * 1.6f) + ((float)line_senLL * 1.25f) + (float)line_senL) - ((float)line_senR + ((float)line_senRR * 1.25f) + ((float)line_senRRR * 1.6f)); //1.25 1.6
-	def_pos[0] = ( ((float)line_senLLL) + ((float)line_senLL ) + (float)line_senL) - ((float)line_senR + ((float)line_senRR ) + ((float)line_senRRR )); //1.25 1.6
+	def_pos[0] = ( ((float)line_senLLL) + ((float)line_senLL ) + (float)line_senL) - ((float)line_senR + ((float)line_senRR ) + ((float)line_senRRR))*1.2; //1.25 1.6
+
+
+	mon_def_pos = def_pos[0];
+
 
 	p_pos = kp_pos * def_pos[0]; //P制御
 	i_pos += ki_pos * def_pos[0] * DELTA_T; //I制御
 	d_pos = kd_pos * (def_pos[0] - def_pos[1]) / DELTA_T; //D制御
 
-	order_posR = -p_pos + i_pos + d_pos;
-	order_posL = (p_pos + i_pos + d_pos);
+//	order_posR = -p_pos + i_pos + d_pos;
+//	order_posL = (p_pos + i_pos + d_pos);
+	order_posR = -(p_pos +  d_pos);
+	order_posL = (p_pos + 	d_pos);
 
 	def_pos[1] = def_pos[0];
 
 }
 
 void velPID(float target) {
-	float p_vel, kp_vel = 2.80f/*2.8f*/, ki_vel = 50.0f;	//2.8 50
+	float p_vel, kp_vel = 4.8f/*2.8f*/, ki_vel = 50.0f;	//2.8 50
 	//float vel_center, filter_vel_center, acceleration_imu;
 	static float i_vel, def_vel, vel_center;
+
+	if(i_vel_clear_flag == 1){
+		i_vel = 0;
+		i_vel_clear_flag = 0;
+	}
 
 	vel_center = (velR + velL) / 2.0f;
 	//acceleration_imu = (float)xa / 16384.0f;
 	//filter_vel_center = ComplementaryFilter(acceleration_imu, vel_center, 0.65f, last_vel_center);
 	//last_vel_center = filter_vel_center;
 
-	def_vel = 300.0f - vel_center ;
+	//def_vel = 500.0f - vel_center ;
+	def_vel = target - vel_center ;
 
 	p_vel = kp_vel * def_vel;
 	i_vel += ki_vel * def_vel * DELTA_T;

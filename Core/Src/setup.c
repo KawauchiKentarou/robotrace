@@ -5,6 +5,8 @@
  *      Author: kawauchikentarou
  */
 #include "setup.h"
+#include "sensor.h"
+//#include "sensor.c"
 
 uint32_t log_check_adress;
 
@@ -86,13 +88,13 @@ void setup(void){
 				lcd_locate(0,0);
 				lcd_print("Encoder1");
 				lcd_locate(0,1);
-				//lcd_printf("%8d", (int)mileage((float)enc_tim1_total));
+				lcd_printf("%8d", (int)mileage((float)enc_tim1_total));
 				break;
 			case 11:
 				lcd_locate(0,0);
 				lcd_print("Encoder2");
 				lcd_locate(0,1);
-				//lcd_printf("%8d", (int)mileage((float)enc_tim8_total));
+				lcd_printf("%8d", (int)mileage((float)enc_tim8_total));
 				break;
 			case 12:
 				lcd_locate(0,0);
@@ -121,12 +123,79 @@ void setup(void){
 		case 1:
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 
-			lcd_locate(0,0);
+	/*		lcd_locate(0,0);
 			lcd_print("test_ESC");
 			lcd_locate(0,1);
 			lcd_print("SW_PUSH_");
+			*/
+			lcd_locate(0,0);
+			lcd_print("nomusan");
+			lcd_locate(0,1);
+			lcd_print("no_KTAN");
 
 			if( sw_center_state == 1 ) {
+				ADC_init();
+	/*		void ADC_init(){
+				switch(sensor_mode) {
+				case 0:
+					lcd_locate(0,0);
+					lcd_print("nomusan");
+					lcd_locate(0,1);
+					lcd_print("no_KTAN");
+					break;
+
+				case 1:
+					lcd_locate(0,0);
+					lcd_print("genkini");
+					lcd_locate(0,1);
+					lcd_print("mokkori");
+					break;
+
+				}
+			}
+				//Flash_load();
+				//lcd_printf("ADCinit");
+				HAL_Delay(100);
+				uint16_t ADC_Max[SENSOR_NUMBER]={0};
+				uint16_t i;
+
+				for(int j=0;j<SENSOR_NUMBER;j++){
+					ADC_min[j]=10000;
+				}
+
+
+				i = 0;
+				while (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_14))
+				{
+					if(analog[i] > ADC_Max[i]){
+						ADC_Max[i] = analog[i];
+					}
+					if(analog[i] < ADC_min[i]){
+						ADC_min[i] = analog[i];
+					}
+					i++;
+					if(i == SENSOR_NUMBER){
+						i=0;
+					}
+				//	LED(2);
+
+				}
+				for(int j=0;j<SENSOR_NUMBER;j++){
+					ADC_dif[j] = ADC_max[j]-ADC_min[j];
+				//	work_ram[z] = ADC_dif[z];
+				//	work_ram[z+SENSOR_NUMBER] = ADC_Small[z];
+				}
+				//Flash_store();
+				//for(int z=0;z<SENSOR_NUMBER;z++){
+			//		printf("%d,%d\r\n",z,ADC_Small[z]);
+				//}
+			//	for(int z=0;z<SENSOR_NUMBER;z++){
+			//		printf("%d,%d\r\n",z,ADC_Max[z]);
+			//	}
+			//	LED(3);
+
+			}*/
+
 
 				/*
 				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 2116);	//	1763(ESC_MIN) + 17.64 * 20
@@ -154,7 +223,7 @@ void setup(void){
 			lcd_print("SW_PUSH_");
 
 			if( sw_center_state == 1 ) {
-				Motorset(400, 200, 0);
+				Motorset(400, 400, 0);
 				/*
 				__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, 400);
 				__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_2, 400);
@@ -201,13 +270,26 @@ void setup(void){
 			lcd_locate(0,1);
 			lcd_print("START 1 ");
 			if(sw_center_state == 1) {
-				main_pattern = 10;
+				HAL_Delay(1000);
+				order_posR = 0.0f;
+				order_posL = 0.0f;
+				order_velR = 0.0f;
+				order_velL = 0.0f;
 				timer = 0;
 				enc_cnt = 0;
 				sw_center_state = 0;
 				velocity_pattern = 1;
 				lcd_clear();
 				HAL_Delay(1000);
+				main_pattern = 8;
+				MR_flag = 0;
+				MR_flag = 0;
+				crossline_flag_L = 0;
+				crossline_flag_M = 0;
+				i_vel_clear_flag = 1;
+				i_pos_clear_flag = 1;
+				target_vel = 100.0f;
+
 			}
 			break;
 		case 6:
@@ -216,19 +298,27 @@ void setup(void){
 			lcd_locate(0,1);
 			lcd_print("START 2 ");
 			if(sw_center_state == 1) {
-				main_pattern = 10;
-				timer = 0;
-				enc_cnt = 0;
-				sw_center_state = 0;
-				log_check_adress = start_adress_sector10;
-				if( isnan( *(float*)log_check_adress ) == 0 ) {
-					second_trace_flag = 1;
-					second_trace_pattern = 1;
-				}
-				else velocity_pattern = 2;
-				lcd_clear();
-				HAL_Delay(1000);
-			}
+						HAL_Delay(1000);
+						order_posR = 0.0f;
+						order_posL = 0.0f;
+						order_velR = 0.0f;
+						order_velL = 0.0f;
+						timer = 0;
+						enc_cnt = 0;
+						sw_center_state = 0;
+						velocity_pattern = 1;
+						lcd_clear();
+						HAL_Delay(1000);
+						main_pattern = 9;
+						MR_flag = 0;
+						MR_flag = 0;
+						crossline_flag_L = 0;
+						crossline_flag_M = 0;
+						i_vel_clear_flag = 1;
+						i_pos_clear_flag = 1;
+						target_vel = 1000.0f;
+
+					}
 			break;
 		case 7:
 			lcd_locate(0,0);
@@ -236,19 +326,27 @@ void setup(void){
 			lcd_locate(0,1);
 			lcd_print("START 3 ");
 			if(sw_center_state == 1) {
-				main_pattern = 10;
-				timer = 0;
-				enc_cnt = 0;
-				sw_center_state = 0;
-				log_check_adress = start_adress_sector11;
-				if( isnan( *(float*)log_check_adress ) == 0 ) {
-					second_trace_flag = 1;
-					second_trace_pattern = 2;
-				}
-				else velocity_pattern = 3;
-				lcd_clear();
-				HAL_Delay(1000);
-			}
+						HAL_Delay(1000);
+						order_posR = 0.0f;
+						order_posL = 0.0f;
+						order_velR = 0.0f;
+						order_velL = 0.0f;
+						timer = 0;
+						enc_cnt = 0;
+						sw_center_state = 0;
+						velocity_pattern = 1;
+						lcd_clear();
+						HAL_Delay(1000);
+						main_pattern = 10;
+						MR_flag = 0;
+						MR_flag = 0;
+						crossline_flag_L = 0;
+						crossline_flag_M = 0;
+						i_vel_clear_flag = 1;
+						i_pos_clear_flag = 1;
+						target_vel = 1000.0f;
+
+					}
 			break;
 		default:
 			break;

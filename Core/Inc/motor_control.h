@@ -34,6 +34,11 @@ extern float order_posL;
 extern float order_velR;
 extern float order_velL;
 extern float target_vel;
+extern float mon_def_pos;
+extern float motor_pwmL;
+extern float motor_pwmR;
+extern int i_vel_clear_flag;
+extern int i_pos_clear_flag;
 
 
 #define MR_SET 			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET)
