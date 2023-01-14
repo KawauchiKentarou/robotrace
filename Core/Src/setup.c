@@ -120,7 +120,7 @@ void setup(void){
 			}
 
 			break;
-		case 1:
+/*		case 1:
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
 
 	/*		lcd_locate(0,0);
@@ -128,7 +128,7 @@ void setup(void){
 			lcd_locate(0,1);
 			lcd_print("SW_PUSH_");
 			*/
-			lcd_locate(0,0);
+/*			lcd_locate(0,0);
 			lcd_print("nomusan");
 			lcd_locate(0,1);
 			lcd_print("no_KTAN");
@@ -203,15 +203,15 @@ void setup(void){
 				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 2116);
 				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 2116);
 				*/
-			}
+/*			}
 			else {
 				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, ESC_MIN);
 				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, ESC_MIN);
 				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, ESC_MIN);
 				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, ESC_MIN);
 			}
-			break;
-		case 2:
+			break;*/
+		case 1://case 2:
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, ESC_MIN);
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, ESC_MIN);
 			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, ESC_MIN);
@@ -241,7 +241,7 @@ void setup(void){
 				*/
 			}
 			break;
-		case 3:
+	/*	case 3:
 			__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, 0);
 			__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_2, 0);
 
@@ -263,12 +263,12 @@ void setup(void){
 			lcd_print("_case-4_");
 			lcd_locate(0,1);
 			lcd_print("________");
-			break;
-		case 5:
+			break;*/
+		case 2://case 5:
 			lcd_locate(0,0);
 			lcd_print("SW_PUSH");
 			lcd_locate(0,1);
-			lcd_print("START 1 ");
+			lcd_print("START 15 ");
 			if(sw_center_state == 1) {
 				HAL_Delay(1000);
 				order_posR = 0.0f;
@@ -288,16 +288,132 @@ void setup(void){
 				crossline_flag_M = 0;
 				i_vel_clear_flag = 1;
 				i_pos_clear_flag = 1;
-				target_vel = 100.0f;
+				crossline_flag = 0 ;
+				target_vel = 1500.0f;
 
 			}
 			break;
-		case 6:
+		case 3://case 6:
 			lcd_locate(0,0);
 			lcd_print("SW_PUSH");
 			lcd_locate(0,1);
-			lcd_print("START 2 ");
+			lcd_print("START 17 ");
 			if(sw_center_state == 1) {
+				HAL_Delay(1000);
+				order_posR = 0.0f;
+				order_posL = 0.0f;
+				order_velR = 0.0f;
+				order_velL = 0.0f;
+				timer = 0;
+				enc_cnt = 0;
+				sw_center_state = 0;
+				velocity_pattern = 1;
+				lcd_clear();
+				HAL_Delay(1000);
+				main_pattern = 8;
+				MR_flag = 0;
+				MR_flag = 0;
+				crossline_flag_L = 0;
+				crossline_flag_M = 0;
+				crossline_flag = 0;
+				i_vel_clear_flag = 1;
+				i_pos_clear_flag = 1;
+				target_vel = 1700.0f;
+
+					}
+			break;
+		case 4://case 7:
+			lcd_locate(0,0);
+			lcd_print("SW_PUSH");
+			lcd_locate(0,1);
+			lcd_print("START 18 ");
+			if(sw_center_state == 1) {
+				HAL_Delay(1000);
+				order_posR = 0.0f;
+				order_posL = 0.0f;
+				order_velR = 0.0f;
+				order_velL = 0.0f;
+				timer = 0;
+				enc_cnt = 0;
+				sw_center_state = 0;
+				velocity_pattern = 1;
+				lcd_clear();
+				HAL_Delay(1000);
+				main_pattern = 8;
+				MR_flag = 0;
+				MR_flag = 0;
+				crossline_flag_L = 0;
+				crossline_flag_M = 0;
+				crossline_flag = 0;
+				i_vel_clear_flag = 1;
+				i_pos_clear_flag = 1;
+				target_vel = 1800.0f;
+			}
+	break;
+
+		case 5://case 8:
+			lcd_locate(0,0);
+			lcd_print("SW_PUSH");
+			lcd_locate(0,1);
+			lcd_print("START 20 ");
+			if(sw_center_state == 1) {
+				HAL_Delay(1000);
+				order_posR = 0.0f;
+				order_posL = 0.0f;
+				order_velR = 0.0f;
+				order_velL = 0.0f;
+				timer = 0;
+				enc_cnt = 0;
+				sw_center_state = 0;
+				velocity_pattern = 1;
+				lcd_clear();
+				HAL_Delay(1000);
+				main_pattern = 8;
+				MR_flag = 0;
+				MR_flag = 0;
+				crossline_flag_L = 0;
+				crossline_flag_M = 0;
+				crossline_flag = 0;
+				i_vel_clear_flag = 1;
+				i_pos_clear_flag = 1;
+				target_vel = 2000.0f;
+					}
+			break;
+
+		case 6://case 9:
+				lcd_locate(0,0);
+				lcd_print("SW_PUSH");
+				lcd_locate(0,1);
+				lcd_print("START 22 ");
+				if(sw_center_state == 1) {
+					HAL_Delay(1000);
+					order_posR = 0.0f;
+					order_posL = 0.0f;
+					order_velR = 0.0f;
+					order_velL = 0.0f;
+					timer = 0;
+					enc_cnt = 0;
+					sw_center_state = 0;
+					velocity_pattern = 1;
+					lcd_clear();
+					HAL_Delay(1000);
+					main_pattern = 8;
+					MR_flag = 0;
+					MR_flag = 0;
+					crossline_flag_L = 0;
+					crossline_flag_M = 0;
+					crossline_flag = 0;
+					i_vel_clear_flag = 1;
+					i_pos_clear_flag = 1;
+					target_vel = 2200.0f;
+						}
+				break;
+		case 7://case 9:
+					lcd_locate(0,0);
+					lcd_print("SW_PUSH");
+					lcd_locate(0,1);
+					lcd_print("START 25 ");
+					if(sw_center_state == 1) {
 						HAL_Delay(1000);
 						order_posR = 0.0f;
 						order_posL = 0.0f;
@@ -309,45 +425,17 @@ void setup(void){
 						velocity_pattern = 1;
 						lcd_clear();
 						HAL_Delay(1000);
-						main_pattern = 9;
+						main_pattern = 8;
 						MR_flag = 0;
 						MR_flag = 0;
 						crossline_flag_L = 0;
 						crossline_flag_M = 0;
+						crossline_flag = 0;
 						i_vel_clear_flag = 1;
 						i_pos_clear_flag = 1;
-						target_vel = 1000.0f;
-
-					}
-			break;
-		case 7:
-			lcd_locate(0,0);
-			lcd_print("SW_PUSH");
-			lcd_locate(0,1);
-			lcd_print("START 3 ");
-			if(sw_center_state == 1) {
-						HAL_Delay(1000);
-						order_posR = 0.0f;
-						order_posL = 0.0f;
-						order_velR = 0.0f;
-						order_velL = 0.0f;
-						timer = 0;
-						enc_cnt = 0;
-						sw_center_state = 0;
-						velocity_pattern = 1;
-						lcd_clear();
-						HAL_Delay(1000);
-						main_pattern = 10;
-						MR_flag = 0;
-						MR_flag = 0;
-						crossline_flag_L = 0;
-						crossline_flag_M = 0;
-						i_vel_clear_flag = 1;
-						i_pos_clear_flag = 1;
-						target_vel = 1000.0f;
-
-					}
-			break;
+						target_vel = 2500.0f;
+							}
+					break;
 		default:
 			break;
 	}

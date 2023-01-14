@@ -1,6 +1,8 @@
-sensor.c:96:6:ADC_init	8	static
-sensor.c:159:6:ADval_get	4	static
-sensor.c:206:6:Maker_Check	4	static
-sensor.c:340:6:ADval_sum	4	static
-sensor.c:351:6:getEncoder	24	static
-sensor.c:379:7:mileage	16	static
+sensor.c:98:6:ADC_init	8	static
+sensor.c:161:6:ADval_get	4	static
+sensor.c:181:6:CrossCheck	24	static
+sensor.c:196:6:Maker_Check	4	static
+sensor.c:264:9:StartGoalCheck	24	static
+sensor.c:287:6:ADval_sum	4	static
+sensor.c:298:6:getEncoder	24	static
+sensor.c:326:7:mileage	16	static

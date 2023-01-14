@@ -68,7 +68,8 @@ void posPID(void) {
 
 	float p_pos, d_pos;
 	static float i_pos;
-	float kp_pos = 0.025f, ki_pos = 0.004f/*0.004f*/, kd_pos = 0.002f/*0.008f*/;
+	//float kp_pos = 0.025f, ki_pos = 0.004f/*0.004f*/, kd_pos = 0.002f/*0.008f*/;
+	float kp_pos = 0.1f, ki_pos = 0.005f/*0.004f*/, kd_pos = 0.006f/*0.008f*/;
 	static float def_pos[] = {0.0f, 0.0f};
 
 	if(i_pos_clear_flag == 1){

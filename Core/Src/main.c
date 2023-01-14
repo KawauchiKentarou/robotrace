@@ -159,7 +159,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		//read_accel_data();
 		ADval_get();
 		ADval_sum();
-//		Cross_Check();
+		CrossCheck(CROSSCHECK);
 		Maker_Check();
 
 
@@ -186,10 +186,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			Sensor_st = 0;
 		}*/
 
-		if(main_pattern == 8){
+		if(main_pattern){
 
 			motor_pwmL = order_velL + order_posL;
 			motor_pwmR = order_velR + order_posR;
+
+
 			Motorset((int16_t)(order_velL + order_posL), (int16_t)(order_velR + order_posR), 0);
 			//Motorset((int16_t)(140 + order_posL), (int16_t)(140 + order_posR), 0);
 			//Motorset(order_posL, order_posR, 0);
@@ -201,30 +203,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 			}else*/
-			if(GL_flag == 18 ){
-				main_pattern = 11;
-				timer = 0;
-			}
-
-		}
-
-
-		if(main_pattern == 9){
-
-			motor_pwmL = order_velL + order_posL;
-			motor_pwmR = order_velR + order_posR;
-			//Motorset((int16_t)(order_velL + order_posL), (int16_t)(order_velR + order_posR), 0);
-			Motorset((int16_t)(160 + order_posL), (int16_t)(160 + order_posR), 0);
-			//Motorset(order_posL, order_posR, 0);
-//			Motorset(order_velL, order_velR, 0);
-			//Motorset(-100, -100, 0);
-
-			/*if(MR_flag == 1  ){
-				MR_flag = 0 ;
-
-
-			}else*/
-			if(GL_flag >= 18 ){
+			if(GL_flag == 2 ){
 				main_pattern = 11;
 				timer = 0;
 			}
@@ -233,27 +212,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-		if(main_pattern == 10){
 
-			motor_pwmL = order_velL + order_posL;
-			motor_pwmR = order_velR + order_posR;
-			//Motorset((int16_t)(order_velL + order_posL), (int16_t)(order_velR + order_posR), 0);
-			Motorset((int16_t)(200 + order_posL), (int16_t)(200 + order_posR), 0);
-			//Motorset(order_posL, order_posR, 0);
-//			Motorset(order_velL, order_velR, 0);
-			//Motorset(-100, -100, 0);
-
-			/*if(MR_flag == 1  ){
-				MR_flag = 0 ;
-
-
-			}else*/
-			if(GL_flag == 18 ){
-				main_pattern = 11;
-				timer = 0;
-			}
-
-		}
 
 		 if(main_pattern == 11){
 			Motorset((int16_t)(order_posL), (int16_t)(order_posR), 0);

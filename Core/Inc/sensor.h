@@ -17,12 +17,22 @@
 #include "switch.h"*/
 #define ADC_DATA_BUFFR_SIZE		((uint16_t)14)
 #define SENSOR_NUMBER 13
-#define ENC_PULSE_MM 	0.012914f/*0.012207f*/		//0.024414f 2逓倍//0.025829
+#define ENC_PULSE_MM 	0.01237411f/*0.012207f*/		//0.024414f 2逓倍//0.025829
 // 速度 = 1msでカウントしたパルス　* 1パルスで進む距離 * 1000 [mm/s]
 // 1msで数mm進むのでm/s これに1000かけてmm/s
 // 1pulseで進む距離　= タイヤ周長 / (エンコーダのパルス * n逓倍 * 減速比)
 //								= 68mm / (512 * 4 * 2.72) = 0.0122...
 //								= 72mm / (512 * 4 * 2.72) = 0.012914...
+//								= 70.68mm / (512 * 4 * 2.72) = 0.012655...
+//								= 69.11mm / (512 * 4 * 2.72) = 0.012655...
+
+
+#define ERRORCHECK		25000		//25000←9号館
+#define CROSSCHECK		3000		//2500←9号館
+#define MAKERTHRESHOLD	1600		//900←9号館
+
+
+
 
 extern ADC_HandleTypeDef hadc1;
 extern TIM_HandleTypeDef htim1;
@@ -56,6 +66,8 @@ extern uint16_t line_senL;
 extern uint16_t line_senR;
 extern uint16_t line_senRR;
 extern uint16_t line_senRRR;
+
+extern uint16_t Crossval;
 extern int64_t enc_tim1_total;
 extern int64_t enc_tim8_total;
 extern int64_t enc_tim_total;
@@ -105,7 +117,7 @@ extern uint16_t ADC_dif[SENSOR_NUMBER];
 extern uint16_t ADC_max[SENSOR_NUMBER];
 extern uint16_t ADC_min[SENSOR_NUMBER];
 extern uint8_t MakerSenTh(uint16_t);
-extern uint8_t CrossCheck(uint16_t);
+extern void CrossCheck(uint16_t);
 extern uint8_t R_cnt;
 extern uint8_t L_cnt;
 extern uint8_t MR_cn;
@@ -116,10 +128,14 @@ extern int L_flag;
 extern int MR_flag;
 extern int ML_flag;
 extern int GL_flag;
-extern unsigned char maker_pattern;
+extern uint8_t start_goal_flag;
+extern uint8_t maker_pattern;
 extern uint8_t Maker_senL;
 extern uint8_t Maker_senR;
 extern uint8_t Sensor_st;
+
+extern uint8_t maker_check;
+extern char crossline_flag;
 
 
 void peripheral_init(void);
@@ -129,7 +145,11 @@ void getEncoder(void);
 void ADval_get(void);
 void ADval_sum(void);
 void ADC_init(void);
-void Cross_Check(void);
+//void Cross_Check(void);
 void Maker_Check(void);
+void ErrorCheck(uint16_t);
+//void CrossCheck(uint16_t);
+uint8_t StartGoalCheck(uint8_t);
+void MakerCheck(uint8_t);
 
 #endif /* INC_SENSOR_H_ */

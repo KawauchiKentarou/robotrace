@@ -29,6 +29,7 @@ uint16_t line_senL = 0;
 uint16_t line_senR = 0;
 uint16_t line_senRR = 0;
 uint16_t line_senRRR = 0;
+uint16_t Crossval = 0;
 int16_t enc_tim1_ms = 0;
 int16_t enc_tim8_ms = 0;
 int64_t enc_tim1_total = 0;
@@ -51,10 +52,11 @@ char error_flag = 0;
 uint16_t error_cnt;
 int timer = 0;
 unsigned char main_pattern = 0;
-unsigned char maker_pattern = 0;
+uint8_t maker_pattern = 0;
 uint8_t maker_check;
 int crossline_flag_L = 0;
 int crossline_flag_M = 0;
+char crossline_flag = 0;
 int L_Maker_flag = 0;
 int R_Maker_flag = 0;
 uint8_t R_cnt = 0;
@@ -67,6 +69,7 @@ int L_flag = 0;
 int MR_flag = 0;
 int ML_flag = 0;
 int GL_flag = 0;
+uint8_t start_goal_flag = 0;
 
 unsigned char velocity_pattern = 0;
 int encoder_event = 0;
@@ -84,7 +87,6 @@ float mm_total = 0;
 uint32_t maker_adress;
 uint16_t maker_distance_cmp_lim;
 uint8_t MakerSenTh(uint16_t);
-uint8_t CrossCheck(uint16_t);
 float PlanVelo2[6000];
 uint8_t second_trace_pattern;
 uint16_t ADC_min[SENSOR_NUMBER];
@@ -176,156 +178,78 @@ void ADval_get(void) {
 
 
 
-/*void Cross_Check(void) {
-	if(line_sen11 <= 500){
-		L_cnt++;
-	}
-	if(line_sen0 <= 500){
-		R_cnt++;
+void CrossCheck(uint16_t crossthreshold){
+
+	Crossval = line_senLL + line_senL + line_senR + line_senRR;
+
+
+	if(crossline_flag == 0 && line_senLL + line_senL + line_senR + line_senRR < crossthreshold ) {
+		crossline_flag = 1;
+		enc_cnt = 0;
 	}
 
-	if(L_cnt >=5 && R_cnt >=5){
-		L_cnt = 0;
-		R_cnt = 0;
-		crossline_flag_L = 1;
+	if(crossline_flag == 1 && mileage((float)enc_cnt) >= 90){
+		crossline_flag = 0;
 	}
-		else if(L_cnt >=5){
-			L_cnt = 0;
-			R_cnt = 0;
-			crossline_flag = 0;
-		}
-		else if(R_cnt >=5){
-				L_cnt = 0;
-				R_cnt = 0;
-				crossline_flag = 0;
-
-	}
-	}*/
-
+}
 
 void Maker_Check(void) {
 
-	if(line_sen12 >= 300 && line_sen13 >= 300){	//black
+
+	if(line_sen12 >= 500 && line_sen13 >= 500){	//black
 		Sensor_st = 0;
 	}
 	else if(line_sen12 <= 500 && line_sen13 <= 500){	//white
-		Sensor_st = 2;
+		Sensor_st = 3;
 	}
-/*	else if(line_sen12 <= 300){	//left
+	else if(line_sen12 <= 500){	//left
 			Sensor_st = 1;
-		}*/
+		}
 
-	/*else*/ if(line_sen13 <= 300){	//right
+	else if(line_sen13 <= 500){	//right
 			Sensor_st = 2;
 		}
 
+
+
 	if(Sensor_st == 2){
-					MR_cnt++;
-				}
-				else{
-					MR_cnt = 0;
-				}
+		MR_cnt = 1;
+	}
+	else if(Sensor_st == 3){
+		MR_cnt = 0;
+	}
+
+/*	if(MR_cnt >=5){
+		maker_pattern = 2;
+
+	}
+
+	if(MR_cnt >=5  && maker_pattern == 0){
+		MR_flag = 0;
+		enc_cnt = 0;
+		maker_pattern = 2;
+	}*/
 
 
-	if(MR_cnt >=10){
-					MR_cnt = 0;
-					MR_flag = 0;
-					maker_pattern = 2;
-					}
+	if(MR_cnt == 1 && crossline_flag == 1){
+			//maker_pattern = 0;
+			MR_cnt= 0;
+	}
+	else if(MR_cnt == 1 && Sensor_st == 0 && crossline_flag == 0){
+		MR_cnt = 0;
+		GL_flag++;;
+	}
+
+	/*if(maker_pattern == 3 ){
+		GL_flag++;
+		maker_pattern = 0;
+	}else{
+		maker_pattern = 0;
+
+	}*/
 
 
-
-				if(maker_pattern == 2){
-					if(line_sen13 >= 500){
-					maker_pattern = 3;
-					}
-				}
-
-				if(maker_pattern == 3){
-					GL_flag++;
-					maker_pattern = 0;
-				}
-
-
-/*		switch(maker_pattern){
-
-		case 0:
-			MR_flag = 0;
-			if(Sensor_st == 1){
-				ML_cnt++;
-			}
-			else{
-				ML_cnt = 0;
-			}
-			if(Sensor_st == 2){
-				MR_cnt++;
-			}
-			else{
-				MR_cnt = 0;
-			}
-			if(Sensor_st == 3){
-				CR_cnt++;
-			}
-			else{
-				CR_cnt = 0;
-			}
-
-			if(CR_cnt >=5){
-				Sensor_st = 0;
-				enc_tim_MC = enc_tim_total+50;
-				maker_pattern= 3;
-			}
-			else if(ML_cnt >=10){
-				Sensor_st = 0;
-				enc_tim_ML = enc_tim_total+50;
-				maker_pattern= 1;
-			}
-			else if(MR_cnt >=10){
-				Sensor_st = 0;
-				enc_tim_MR = enc_tim_total+5;
-				MR_cnt = 0;
-				MR_flag = 0;
-				if(line_sen12 <= 500){
-					maker_pattern = 0;
-				}else
-				{
-					maker_pattern = 2;
-				//}
-			}
-
-			break;
-		case 1:
-			if(enc_tim_ML <=enc_tim_total){
-				ML_cnt = 0;
-				MR_cnt = 0;
-				ML_flag = 1;
-				maker_pattern = 0;
-			}
-			break;
-		case 2:
-			if(enc_tim_MR <= enc_tim_total){
-				ML_cnt = 0;
-				MR_cnt = 0;
-				MR_flag = 0;
-				maker_pattern = 4;
-			}
-			break;
-		case 3:
-
-			if(enc_tim_MC <=enc_tim_total){
-				ML_cnt = 0;
-				MR_cnt = 0;
-				crossline_flag_M = 1;
-				maker_pattern = 0;
-			}
-			break;
-		case 4:
-				GL_flag++;
-				maker_pattern = 0;
-			break;
-		}*/
 }
-
 /*uint8_t MakerSenTh(uint16_t makerthreshold) {
 	uint8_t maker = 0;
 
@@ -336,6 +260,29 @@ void Maker_Check(void) {
 
 	return maker;
 }*/
+
+uint8_t StartGoalCheck(uint8_t makerval) {
+	uint8_t ret = 0;
+
+
+
+/*	if( mileage((float)enc_cnt2) >= 20 && start_goal_flag == 0 && makerval == 8) {
+		start_goal_flag = 1;
+	}
+
+	if( start_goal_flag == 1 ) {
+		if(makerval == 0) {
+			start_goal_flag = 0;
+			ret = 1;
+		}
+		else if( (makerval &= 0x03) > 0 && (makerval &= 0x03) < 8) {
+			start_goal_flag = 0;
+			enc_cnt2 = 0;
+		}
+	}*/
+
+	return ret;
+}
 
 void ADval_sum(void) {
 	line_senLLL	= line_sen11 + line_sen10;
@@ -359,12 +306,12 @@ void getEncoder(void) {
 	TIM1 -> CNT = 0;
 	TIM8 -> CNT = 0;
 
-	enc_tim1_total += enc_tim1_ms;
+	enc_tim1_total -= enc_tim1_ms;
 	enc_tim8_total += enc_tim8_ms;
 	enc_tim_total = (enc_tim1_total + enc_tim8_total) / 2;
 
-	enc_cnt += ((enc_tim1_ms + enc_tim8_ms) / 2.0f);
-	enc_cnt2 += ((enc_tim1_ms + enc_tim8_ms) / 2.0f);
+	enc_cnt += ((-enc_tim1_ms + enc_tim8_ms) / 2.0f);
+	enc_cnt2 += ((-enc_tim1_ms + enc_tim8_ms) / 2.0f);
 
 	enc_tim1_cnt_10ms += enc_tim1_ms;
 	enc_tim8_cnt_10ms += enc_tim8_ms;
